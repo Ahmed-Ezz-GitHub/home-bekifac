@@ -1,0 +1,236 @@
+        // Product data
+        const products = [
+            {
+                id: 1,
+                title: 'أريكة فاخرة',
+                price: '1,299',
+                category: 'living',
+                description: 'أريكة عصرية مريحة بتصميم أنيق يناسب جميع ديكورات المنزل. مصنوعة من أجود أنواع القماش المقاوم للبقع والتلف، مع إطار خشبي صلب يدوم طويلاً.',
+                features: [
+                    'مقاعد مبطنة بمواد عالية الجودة',
+                    'إطار خشب صلب',
+                    'متوفرة بعدة ألوان',
+                    'سهلة التنظيف',
+                    'ضمان 3 سنوات',
+                    'توصيل مجاني'
+                ],
+                images: ['01.JPG', '02.JPG', '03.JPG', '04.JPG']
+            },
+            {
+                id: 2,
+                title: 'سرير ملكي',
+                price: '2,499',
+                category: 'bedroom',
+                description: 'سرير فاخر مع رأس سرير مبطنة بتصميم عصري يوفر أقصى درجات الراحة والرفاهية. مصنوع من الخشب الصلب والمخمل الفاخر.',
+                features: [
+                    'سرير عائلي فاخر',
+                    'رأس سرير مبطّن',
+                    'تصميم عصري أنيق',
+                    'متوفر بعدة مقاسات',
+                    'سهل التركيب',
+                    'ضمان 5 سنوات'
+                ],
+                images: ['02.JPG', '03.JPG', '04.JPG', '05.JPG']
+            },
+            {
+                id: 3,
+                title: 'طاولة طعام خشبية',
+                price: '3,199',
+                category: 'dining',
+                description: 'طاولة طعام عائلية فاخرة مصنوعة من الخشب الطبيعي المتين، تناسب العائلات الكبيرة وتتحمل الاستخدام اليومي.',
+                features: [
+                    'مصنوعة من الخشب الطبيعي',
+                    'تتسع لـ 8 أشخاص',
+                    'مقاومة للخدوش',
+                    'سهلة التنظيف',
+                    'تصميم كلاسيكي',
+                    'ضمان 4 سنوات'
+                ],
+                images: ['03.JPG', '04.JPG', '05.JPG', '06.JPG']
+            },
+            {
+                id: 4,
+                title: 'مكتب مودرن',
+                price: '1,899',
+                category: 'office',
+                description: 'مكتب أنيق وعملي مع مساحة تخزين مدمجة، مثالي للعمل من المنزل أو المكاتب الصغيرة.',
+                features: [
+                    'تصميم عصري مدمج',
+                    'رفوف تخزين مدمجة',
+                    'مناسب للمساحات الصغيرة',
+                    'سهل التركيب',
+                    'متين وطويل الأمد',
+                    'ضمان سنتين'
+                ],
+                images: ['04.JPG', '05.JPG', '06.JPG', '07.JPG']
+            },
+            {
+                id: 5,
+                title: 'كنبة أنيقة',
+                price: '2,199',
+                category: 'living',
+                description: 'كنبة مريحة بتصميم عصري وألوان هادئة تناسب جميع الأذواق، مع وسائد مريحة تدعم الظهر.',
+                features: [
+                    'مقاعد مبطنة بالكامل',
+                    'إطار معدني متين',
+                    'ألوان عصرية',
+                    'سهلة التنظيف',
+                    'مقاومة للبقع',
+                    'ضمان 3 سنوات'
+                ],
+                images: ['05.JPG', '06.JPG', '07.JPG', '08.JPG']
+            }
+        ];
+
+        // DOM Elements
+        const modal = document.getElementById('productModal');
+        const modalTitle = document.getElementById('modalProductTitle');
+        const modalPrice = document.getElementById('modalProductPrice');
+        const modalDescription = document.getElementById('modalProductDescription');
+        const modalFeatures = document.getElementById('productFeatures');
+        const mainImage = document.getElementById('mainProductImage');
+        const thumbnailContainer = document.querySelector('.thumbnail-container');
+        const closeModal = document.querySelector('.close-modal');
+        const productCards = document.querySelectorAll('.product-card');
+        const quantityInput = document.getElementById('productQuantity');
+        const decreaseBtn = document.getElementById('decreaseQty');
+        const increaseBtn = document.getElementById('increaseQty');
+        const addToCartModal = document.getElementById('addToCartModal');
+
+        // Open modal when clicking on product card
+        productCards.forEach((card, index) => {
+            card.addEventListener('click', (e) => {
+                if (!e.target.classList.contains('add-to-cart')) {
+                    const product = products[index];
+                    openProductModal(product);
+                }
+            });
+        });
+
+        // Close modal
+        closeModal.addEventListener('click', closeModalFunc);
+
+        // Close modal when clicking outside
+        window.addEventListener('click', (e) => {
+            if (e.target === modal) {
+                closeModalFunc();
+            }
+        });
+
+        // Quantity controls
+        decreaseBtn.addEventListener('click', () => {
+            let value = parseInt(quantityInput.value);
+            if (value > 1) {
+                quantityInput.value = value - 1;
+            }
+        });
+
+        increaseBtn.addEventListener('click', () => {
+            let value = parseInt(quantityInput.value);
+            quantityInput.value = value + 1;
+        });
+
+        // Add to cart from modal
+        addToCartModal.addEventListener('click', () => {
+            const productTitle = modalTitle.textContent;
+            const quantity = quantityInput.value;
+            const price = modalPrice.textContent.split(' ')[0];
+            const total = (parseInt(price.replace(/,/g, '')) * parseInt(quantity)).toLocaleString();
+            
+            alert(`تمت إضافة ${quantity} من ${productTitle} إلى سلة التسوق\nالمجموع: ${total} ر.س`);
+            updateCartCount(parseInt(quantity));
+            closeModalFunc();
+        });
+
+        // Function to open product modal
+        function openProductModal(product) {
+            // Update product info
+            modalTitle.textContent = product.title;
+            modalPrice.textContent = `${product.price} ر.س`;
+            modalDescription.textContent = product.description;
+            
+            // Update features
+            modalFeatures.innerHTML = product.features
+                .map(feature => `<li>${feature}</li>`)
+                .join('');
+            
+            // Update images
+            if (product.images && product.images.length > 0) {
+                // Set main image
+                mainImage.src = `./image/${product.images[0]}`;
+                mainImage.alt = product.title;
+                
+                // Create thumbnails
+                thumbnailContainer.innerHTML = product.images.map((img, idx) => 
+                    `<img src="./image/${img}" alt="${product.title} ${idx + 1}" 
+                          class="thumbnail ${idx === 0 ? 'active' : ''}"
+                          data-index="${idx}">`
+                ).join('');
+                
+                // Add click event to thumbnails
+                document.querySelectorAll('.thumbnail').forEach(thumb => {
+                    thumb.addEventListener('click', (e) => {
+                        const imgSrc = e.target.src;
+                        mainImage.style.opacity = '0';
+                        
+                        setTimeout(() => {
+                            mainImage.src = imgSrc;
+                            mainImage.style.opacity = '1';
+                        }, 200);
+                        
+                        // Update active thumbnail
+                        document.querySelectorAll('.thumbnail').forEach(t => t.classList.remove('active'));
+                        e.target.classList.add('active');
+                    });
+                });
+            }
+            
+            // Reset quantity
+            quantityInput.value = 1;
+            
+            // Show modal
+            modal.style.display = 'block';
+            document.body.style.overflow = 'hidden';
+        }
+
+        // Function to close modal
+        function closeModalFunc() {
+            modal.style.display = 'none';
+            document.body.style.overflow = 'auto';
+        }
+
+        // Update cart count
+        function updateCartCount(quantity) {
+            let cartCount = document.querySelector('.cart-count');
+            if (!cartCount) {
+                const cartIcon = document.querySelector('.furniture a');
+                cartCount = document.createElement('span');
+                cartCount.className = 'cart-count';
+                cartIcon.appendChild(cartCount);
+            }
+            const currentCount = parseInt(cartCount.textContent) || 0;
+            cartCount.textContent = currentCount + quantity;
+            cartCount.style.display = 'inline-block';
+            cartCount.style.position = 'absolute';
+            cartCount.style.top = '-5px';
+            cartCount.style.right = '-5px';
+            cartCount.style.background = '#e74c3c';
+            cartCount.style.color = 'white';
+            cartCount.style.borderRadius = '50%';
+            cartCount.style.width = '20px';
+            cartCount.style.height = '20px';
+            cartCount.style.fontSize = '12px';
+            cartCount.style.display = 'flex';
+            cartCount.style.alignItems = 'center';
+            cartCount.style.justifyContent = 'center';
+        }
+
+        // Add to cart buttons in product cards
+        document.querySelectorAll('.add-to-cart').forEach((btn, index) => {
+            btn.addEventListener('click', (e) => {
+                e.stopPropagation();
+                const product = products[index];
+                alert(`تمت إضافة ${product.title} إلى سلة التسوق`);
+                updateCartCount(1);
+            });
+        });
